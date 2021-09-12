@@ -8,6 +8,13 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sugamkarki/lireddit-frontend-angular.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sugamkarki/lireddit-frontend-angular/issues"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "~12.2.0",

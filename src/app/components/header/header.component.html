@@ -1,0 +1,43 @@
+<mat-toolbar color="primary">
+  <div class="left">
+    <a routerLink="/">
+      <mat-icon color="accent" class="icon">reddit</mat-icon></a
+    >
+  </div>
+  <div class="right">
+    <a
+      routerLink="/login"
+      mat-raised-button
+      color="primary"
+      routerLinkActive="mat-accent"
+      *ngIf="!isAuthenticated"
+      >Login</a
+    >
+    <a
+      routerLink="/signup"
+      mat-raised-button
+      color="primary"
+      routerLinkActive
+      *ngIf="!isAuthenticated"
+      routerLinkActive="mat-accent"
+    >
+      Signup</a
+    >
+    <button
+      *ngIf="isAuthenticated"
+      mat-raised-button
+      color="primary"
+      (click)="logout()"
+    >
+      Logout
+    </button>
+    <a
+      routerLink="/me"
+      mat-raised-button
+      color="primary"
+      *ngIf="isAuthenticated"
+      routerLinkActive="mat-accent"
+      >Profile</a
+    >
+  </div>
+</mat-toolbar>

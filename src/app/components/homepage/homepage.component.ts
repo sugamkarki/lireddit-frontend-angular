@@ -1,22 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { Subscription } from 'rxjs';
 import { mimeType } from 'src/app/helpers/mime-type.validator';
+import { Post } from 'src/app/interfaces/post';
+import { AuthService } from 'src/app/services/auth.service';
 import { PostService } from 'src/app/services/post.service';
 @Component({
   selector: 'app-homepage',
   templateUrl: './homepage.component.html',
   styleUrls: ['./homepage.component.scss'],
 })
-export class HomepageComponent implements OnInit {
+export class HomepageComponent implements OnInit, OnDestroy {
   postForm: FormGroup;
   imagePreview: string | null = null;
+  isAuthenticated: boolean;
+  userId: string | null = null;
+  posts: any = [];
+  private postListenerSubscriber: Subscription;
+  private authListenerSubscriber: Subscription;
   constructor(
+    private authService: AuthService,
     private titleService: Title,
     private toastr: ToastrService,
     private postService: PostService
   ) {
+    this.isAuthenticated = this.authService.getIsAuthenticated();
+    this.userId = authService.getUserId();
+    console.log(this.userId);
+    this.postService.getAllPosts();
+    this.authListenerSubscriber = this.authService
+      .getAuthStatusListener()
+      .subscribe((isAuthenticated: boolean) => {
+        this.isAuthenticated = isAuthenticated;
+        this.userId = authService.getUserId();
+      });
     this.titleService.setTitle('Lireddit');
     this.postForm = new FormGroup({
       title: new FormControl('', {
@@ -30,6 +50,17 @@ export class HomepageComponent implements OnInit {
         asyncValidators: [mimeType],
       }),
     });
+
+    this.postListenerSubscriber = this.postService
+      .getPostSubscribale()
+      .subscribe((posts) => {
+        this.posts = posts;
+        console.log(this.posts);
+      });
+  }
+  ngOnDestroy(): void {
+    this.authListenerSubscriber.unsubscribe();
+    this.postListenerSubscriber.unsubscribe();
   }
   ngOnInit(): void {}
   onImagePicked(event: Event) {
@@ -52,5 +83,8 @@ export class HomepageComponent implements OnInit {
       return;
     }
     this.postService.addPost(this.postForm.value);
+  }
+  onDelete(id: string) {
+    this.postService.deletePost(id);
   }
 }

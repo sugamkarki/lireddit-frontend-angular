@@ -19,3 +19,19 @@ input[type="file"] {
 .image-preview img {
   height: 100%;
 }
+.posts {
+  box-sizing: border-box;
+  // background-color: #a35a5a;
+  margin: 3rem 0 3rem 0;
+  display: grid;
+  grid-template-columns: auto auto;
+}
+.post {
+  width: 30vw;
+  min-height: 20vh;
+  margin: 10px;
+  margin: auto;
+  padding: auto;
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 1rem;
+}

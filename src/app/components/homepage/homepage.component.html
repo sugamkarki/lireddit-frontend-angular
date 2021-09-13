@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card *ngIf="isAuthenticated">
   <form [formGroup]="postForm" (submit)="onAddPost()">
     <mat-form-field>
       <input
@@ -33,3 +33,24 @@
     <button mat-raised-button color="accent" type="submit">Add Post</button>
   </form>
 </mat-card>
+
+<div class="posts">
+  <mat-card class="post" *ngFor="let post of posts">
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title>{{ post.title }}</mat-card-title>
+      <mat-card-subtitle>{{ post.creator.email }}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image src="{{ post.imagePath }}" alt="{{ post.title }}" />
+    <mat-card-content>
+      <p>
+        {{ post.content }}
+      </p>
+    </mat-card-content>
+    <mat-card-actions *ngIf="userId === post.creator._id">
+      <button mat-button color="warn" (click)="onDelete(post._id)">
+        Delete
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

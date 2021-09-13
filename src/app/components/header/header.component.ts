@@ -10,6 +10,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class HeaderComponent implements OnInit {
   private authListenerSubscriber: Subscription;
   isAuthenticated: boolean = false;
+
   constructor(private authService: AuthService) {
     this.authListenerSubscriber = this.authService
       .getAuthStatusListener()

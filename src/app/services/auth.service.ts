@@ -15,6 +15,7 @@ export class AuthService {
   private errorMessage: string = '';
   //
   private authStatusListener = new Subject<boolean>();
+  private isAuthenticated: boolean = false;
   constructor(private http: HttpClient, private router: Router) {}
   createUser(user: User) {
     this.http
@@ -40,7 +41,7 @@ export class AuthService {
   }
   login(user: { email: string; password: string }) {
     return this.http
-      .post<{ message: string; id?: string; token: string }>(
+      .post<{ message: string; id: string; token: string }>(
         `${this.API_URL}user/login`,
         {
           observe: 'response',
@@ -49,11 +50,10 @@ export class AuthService {
       )
       .subscribe(
         (res) => {
-          if (res.id) {
-            this.userId = res.id;
-          }
+          this.userId = res.id;
           this.token = res.token;
           this.authStatusListener.next(true);
+          this.isAuthenticated = true;
           localStorage.setItem('token', res.token);
           this.router.navigate(['/']);
         },
@@ -72,8 +72,8 @@ export class AuthService {
   getAuthStatusListener(): Observable<boolean> {
     return this.authStatusListener.asObservable();
   }
-  isAuthenticated(): boolean {
-    return !!this.token;
+  getIsAuthenticated(): boolean {
+    return this.isAuthenticated;
   }
   logout() {
     this.token = null;

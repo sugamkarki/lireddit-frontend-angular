@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
+import { ToastrService } from 'ngx-toastr';
 import { mimeType } from 'src/app/helpers/mime-type.validator';
+import { PostService } from 'src/app/services/post.service';
 @Component({
   selector: 'app-homepage',
   templateUrl: './homepage.component.html',
@@ -10,7 +12,11 @@ import { mimeType } from 'src/app/helpers/mime-type.validator';
 export class HomepageComponent implements OnInit {
   postForm: FormGroup;
   imagePreview: string | null = null;
-  constructor(private titleService: Title) {
+  constructor(
+    private titleService: Title,
+    private toastr: ToastrService,
+    private postService: PostService
+  ) {
     this.titleService.setTitle('Lireddit');
     this.postForm = new FormGroup({
       title: new FormControl('', {
@@ -38,5 +44,13 @@ export class HomepageComponent implements OnInit {
     };
     reader.readAsDataURL(file);
   }
-  onAddPost() {}
+  onAddPost() {
+    if (this.postForm.invalid) {
+      this.toastr.error('Fill out all fields and add an image too!!', 'Error', {
+        timeOut: 1000,
+      });
+      return;
+    }
+    this.postService.addPost(this.postForm.value);
+  }
 }

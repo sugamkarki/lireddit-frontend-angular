@@ -12,6 +12,7 @@ export class HeaderComponent implements OnInit {
   isAuthenticated: boolean = false;
 
   constructor(private authService: AuthService) {
+    this.isAuthenticated = this.authService.getIsAuthenticated();
     this.authListenerSubscriber = this.authService
       .getAuthStatusListener()
       .subscribe((isAuthenticated: boolean) => {

@@ -113,17 +113,15 @@ export class HomepageComponent implements OnInit, OnDestroy {
       this.postService.addPost(this.postForm.value);
     } else {
       console.log(this.postForm.value);
-      if (
-        this.postForm.value.title === '' ||
-        this.postForm.value.content === ''
-      ) {
-        this.toastr.error('Fill out all fields', 'Error', {
-          timeOut: 1000,
-        });
-        return;
-      }
+
+      this.toastr.error('Fill out all fields', 'Error', {
+        timeOut: 1000,
+      });
       this.postService.updatePost(this.postId ?? '', this.postForm.value);
     }
+    this.postForm.reset();
+    this.post = {} as Post;
+    this.router.navigate(['/']);
   }
   onDelete(id: string) {
     this.postService.deletePost(id);

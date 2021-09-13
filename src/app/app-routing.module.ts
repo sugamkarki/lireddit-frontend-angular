@@ -22,6 +22,10 @@ const routes: Routes = [
     path: 'me',
     component: ProfileComponent,
   },
+  {
+    path: ':id',
+    component: HomepageComponent,
+  },
 ];
 
 @NgModule({

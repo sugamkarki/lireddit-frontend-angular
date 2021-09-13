@@ -11,6 +11,7 @@ export class PostService {
     []
   );
   private posts: any;
+  private post: any;
   constructor(private http: HttpClient) {}
   addPost(post: { title: string; content: string; image: File }) {
     console.log(post);
@@ -34,6 +35,17 @@ export class PostService {
         this.postSubscribable.next(res.posts);
       });
   }
+  updatePost(id: string, post: { title: string; content: string }) {
+    console.log(post);
+    this.http
+      .patch<{ message: string; post: any }>(
+        `${environment.API_URL}post/${id}`,
+        post
+      )
+      .subscribe((res) => {
+        this.getAllPosts();
+      });
+  }
   getAllPosts() {
     this.http
       .get<{
@@ -50,6 +62,11 @@ export class PostService {
         // @ts-ignore
         this.postSubscribable.next(res.posts);
       });
+  }
+  getPost(id: string) {
+    return this.http.get<{ message: string; post: any }>(
+      `${environment.API_URL}post/${id}`
+    );
   }
   getPostSubscribale() {
     return this.postSubscribable.asObservable();

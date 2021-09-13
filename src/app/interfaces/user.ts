@@ -5,4 +5,5 @@ export interface User {
   email: String;
   password?: String;
   timestamp?: any;
+  profile_picture?: string;
 }

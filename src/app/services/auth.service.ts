@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../interfaces/user';
@@ -9,13 +10,33 @@ import { User } from '../interfaces/user';
 })
 export class AuthService {
   private API_URL = environment.API_URL;
-  userId: string | null = null;
-  token: string | null = null;
+  private userId: string | null = null;
+  private token: string | null = null;
+  private errorMessage: string = '';
   //
   private authStatusListener = new Subject<boolean>();
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
   createUser(user: User) {
-    return this.http.post(`${this.API_URL}user/signup`, user);
+    this.http
+      .post<{ message: string; user: User; token: string; id: string }>(
+        `${this.API_URL}user/signup`,
+        {
+          observe: 'response',
+          user,
+        }
+      )
+      .subscribe(
+        (res) => {
+          this.token = res.token;
+          this.authStatusListener.next(true);
+          localStorage.setItem('token', res.token);
+          this.router.navigate(['/']);
+        },
+        (err) => {
+          this.errorMessage = err.error.message;
+          this.authStatusListener.next(false);
+        }
+      );
   }
   login(user: { email: string; password: string }) {
     return this.http
@@ -34,9 +55,11 @@ export class AuthService {
           this.token = res.token;
           this.authStatusListener.next(true);
           localStorage.setItem('token', res.token);
+          this.router.navigate(['/']);
         },
         (err) => {
-          console.log(err);
+          this.errorMessage = err.error.message;
+          this.authStatusListener.next(false);
         }
       );
   }
@@ -55,8 +78,12 @@ export class AuthService {
   logout() {
     this.token = null;
     this.userId = null;
+    this.errorMessage = "You've Logged out";
     this.authStatusListener.next(false);
-
     localStorage.removeItem('token');
+    this.router.navigate(['/']);
+  }
+  getErrorMessage() {
+    return this.errorMessage;
   }
 }

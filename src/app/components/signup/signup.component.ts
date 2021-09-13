@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Title } from '@angular/platform-browser';
 import { AuthService } from 'src/app/services/auth.service';
 import { User } from 'src/app/interfaces/user';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -43,8 +44,6 @@ export class SignupComponent implements OnInit {
       last_name: this.signupForm.value.last_name,
       password: this.signupForm.value.password,
     };
-    this.authService.createUser(userData).subscribe((response) => {
-      console.log(response);
-    });
+    this.authService.createUser(userData);
   }
 }
